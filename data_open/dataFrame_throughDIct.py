@@ -15,9 +15,11 @@ cities=['lhr','krc','rwl','isl']
 visitors=[10,20,23,32]
 labels=['weekdays','cities','visitors']
 list_cols = [weekdays, cities, visitors]
+print (list_cols)
 zipped = list(zip(labels,list_cols))
 
-#print (zipped)
+print (zipped)
+print (pd.DataFrame(data))
 
 data = dict(zipped)
 users = pd.DataFrame(data)

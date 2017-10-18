@@ -16,7 +16,7 @@ with open('translated.csv','w',encoding='utf-8') as file:
         if len(line[0]) > 1 and '.' not in line[0]:
             file.write(translator.translate(line[0],dest='ur').text+','+line[1]+','+line[2])
             file.write('\n')
-        time.sleep(2)
+        #time.sleep(1)
 
 
 #for line in reader:

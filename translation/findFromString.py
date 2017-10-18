@@ -5,6 +5,12 @@ print (len(string.split(' ')))
 string1="sdDSs"
 print (string1.lower())
 
-from numpy import genfromtxt
-my_data = genfromtxt('dataSets/names.csv', dtype=None, delimiter=',', names=True)
-print (my_data)
+string = string.replace('waiting','')
+print (string)
+
+def s(s):
+    s=""
+
+s(string)
+print (string ,  "s")
+

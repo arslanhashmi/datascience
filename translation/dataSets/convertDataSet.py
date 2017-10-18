@@ -1,5 +1,3 @@
-
-
 from googletrans import Translator
 import csv
 import time

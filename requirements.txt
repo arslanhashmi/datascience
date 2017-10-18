@@ -8,3 +8,6 @@ spark
 tensorflow
 pymongo
 matplotlib
+googletrans
+pycorenlp
+spacy

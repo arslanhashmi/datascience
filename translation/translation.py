@@ -1,23 +1,3 @@
-'''from threading import Thread
-import asyncio
-def start_loop(loop):
-    asyncio.set_event_loop(loop)
-    loop.run_forever()
-new_loop = asyncio.new_event_loop()
-t = Thread(target=start_loop, args=(new_loop,))
-t.start()
-import time
-def more_work(x):
-  print("More work %s" % x)
-  time.sleep(x)
-  print("Finished more work %s" % x)
-async def do_some_work(x):
-  print("some work %s" % x)
-  time.sleep(x)
-  print("Finished some work %s" % x)
-#new_loop.call_soon_threadsafe(more_work, 20)
-asyncio.run_coroutine_threadsafe(do_some_work(5), new_loop)
-asyncio.run_coroutine_threadsafe(do_some_work(10), new_loop)'''
 
 import asyncio
 import concurrent.futures
@@ -26,38 +6,49 @@ import sys
 import time
 import csv
 
-sentence='MainThread run_blocking_tasks: waiting for executor tasks.'
+sentence='MainThread run_blocking_tasks: waiting for executor tasks. arslan ayesha'
 
 with open('dataSets/engWords.txt', 'r') as f:
     englishWords = f.read()
 
-file=open( "dataSets/Indian-Female-Names.csv", "r",encoding='utf-8')
-female = csv.reader(file)
-file=open( "dataSets/Indian-Male-Names.csv", "r",encoding='utf-8')
-male = csv.reader(file)
+with open('dataSets/maleNames.txt', 'r') as f:
+    male = f.read()
 
+with open('dataSets/femaleNames.txt', 'r') as f:
+    female = f.read()
 
 def find_in_male(word):
-    pass
+    if word in male:
+        return 1
+    return 0
 
 def find_in_female(word):
-    for line in female:
-        if line[0] == word:
-            print(line)
+    if word in female:
+        return 1
+    return 0
 
-
-def blocks(n,word):
+def eng_dict_checking(word):
     if word in englishWords:
-        return {word : 'N/A'}
-    else:
-        if find_in_male(word):
-            return {word : 'male'}
-        elif find_in_female(word):
-            return {word : 'female'}
+        return 1
+    return 0
+
+
+def blocks(n,word,index):
     log = logging.getLogger('blocks({})'.format(n))
     log.info('running')
-    log.info('done')
-    return {}
+    if eng_dict_checking(word):
+        log.info('done')
+        #return {word:'N/A'}
+        return 0
+    else:
+        if find_in_male(word):
+            log.info('done')
+            return {word : ['male',index]}
+        elif find_in_female(word):
+            log.info('done')
+            return {word : ['female',index]}
+
+    return 0
 
 
 async def run_blocking_tasks(executor,wordList):
@@ -68,13 +59,13 @@ async def run_blocking_tasks(executor,wordList):
     log.info('creating executor tasks')
     loop = asyncio.get_event_loop()
     blocking_tasks = [
-        loop.run_in_executor(executor, blocks, i,wordList[i].lower())
+        loop.run_in_executor(executor, blocks, i,wordList[i].lower(),i)
         for i in range(len(wordList))
     ]
     log.info('waiting for executor tasks')
     completed, pending = await asyncio.wait(blocking_tasks)
     results = [t.result() for t in completed]
-    print (results)
+    print ([result for result in results if result!=0])
     log.info('results: {!r}'.format(results))
 
     log.info('exiting')

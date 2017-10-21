@@ -39,7 +39,7 @@ def neural_network_model(data):
 
 def train_neural_network(x):
     prediction = neural_network_model(x)
-    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=prediction,logits=y))
+    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prediction,labels=y))
     optimizer = tf.train.AdamOptimizer().minimize(cost)
 
     # cycles of
@@ -50,7 +50,7 @@ def train_neural_network(x):
 
         for epoch in range(hm_epochs):
             epoch_loss = 0
-            for i in range(int(mnist.train.num.examples/batch_size)):
+            for i in range(int(mnist.train.num_examples/batch_size)):
                 epoch_x, epoch_y = mnist.train.next_batch(batch_size)
                 i, c = sess.run([optimizer,cost],feed_dict = {x:epoch_x,y:epoch_y})
                 epoch_loss += c

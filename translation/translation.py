@@ -3,8 +3,10 @@ import asyncio
 import concurrent.futures
 import logging
 import sys
-import time
+from time import sleep
 import csv
+from multiprocessing import Process
+import math
 
 MALE_STANDARD_NAME = 'abraham'
 FEMALE_STANDARD_NAME = 'alaina'
@@ -45,7 +47,29 @@ def replaceFemaleNames(femaleNames):
     for names in femaleNames:
         sentence.replace(names['female'][0],FEMALE_STANDARD_NAME)
 
-def blocks(n,word,index):
+def f(name):
+    print ('hello', name)
+
+    sleep(1)
+    print('bye', name)
+
+def blocks( a,s,d):
+    #log = logging.getLogger('blocks({})'.format(n))
+    #log.info('running', 'collect_link_class', db_name, str(link_collection_name), str(item_collection_name), proxy_filename,
+    #         str(links_filename), 'product_scraper_class')
+    print()
+    sleep(1)
+    print('ending',)
+
+    return 0
+
+
+def blocks_(n,word,index):
+
+    p = Process(target=f, args=(word,))
+    p.start()
+    p.join()
+
     log = logging.getLogger('blocks({})'.format(n))
     log.info('running')
     if eng_dict_checking(word):
@@ -64,32 +88,35 @@ def blocks(n,word,index):
 
 async def run_blocking_tasks(executor,wordList):
 
-    log = logging.getLogger('run_blocking_tasks')
-    log.info('starting')
 
-    log.info('creating executor tasks')
-    loop = asyncio.get_event_loop()
-    blocking_tasks = [
-        loop.run_in_executor(executor, blocks, i,wordList[i].lower(),i)
-        for i in range(len(wordList))
-    ]
-    log.info('waiting for executor tasks')
-    completed, pending = await asyncio.wait(blocking_tasks)
-    results = [t.result() for t in completed]
-    refinedResults = [result for result in results if result!=0]
-    maleNames = ([result for result in refinedResults if 'male' in result.keys()])
-    femaleNames = ([result for result in refinedResults if 'female' in result.keys()])
-    print (maleNames)
-    print (femaleNames)
-    replaceMaleNames(maleNames)
-    replaceFemaleNames(femaleNames)
-    log.info('results: {!r}'.format(results))
+    for i in range(2):
+        print(i,'th iteration')
+        log = logging.getLogger('run_blocking_tasks')
+        log.info('starting')
 
-    log.info('exiting')
+        log.info('creating executor tasks')
+        loop = asyncio.get_event_loop()
+        blocking_tasks = [
+            loop.run_in_executor(executor, blocks, i,wordList[i].lower(),i)
+            for i in range(len(wordList))
+        ]
+        log.info('waiting for executor tasks')
+        completed, pending = await asyncio.wait(blocking_tasks)
+        results = [t.result() for t in completed]
+        refinedResults = [result for result in results if result!=0]
+        maleNames = ([result for result in refinedResults if 'male' in result.keys()])
+        femaleNames = ([result for result in refinedResults if 'female' in result.keys()])
+        print (maleNames)
+        print (femaleNames)
+        replaceMaleNames(maleNames)
+        replaceFemaleNames(femaleNames)
+        log.info('results: {!r}'.format(results))
+
+        log.info('exiting')
 
 
 
-if __name__ == '__main__':
+if __name__ == '__amain__':
     # Configure logging to show the name of the thread
     # where the log message originates.
     logging.basicConfig(
@@ -106,12 +133,23 @@ if __name__ == '__main__':
     event_loop = asyncio.get_event_loop()
     try:
         event_loop.run_until_complete(
-            run_blocking_tasks(executor,sentence.split(' '))
+            run_blocking_tasks(executor,sentence.split(' '),) # pass here the list of the processes
         )
     finally:
         event_loop.close()
 
     print (sentence,'---')
-
+collect_link_class=[1,2,3,4,5,6,7,8,9]
+range2 = 1 if len(collect_link_class) % 2 == 1 else 0
+#print(range)
+#
+for iteration_no in range(int(math.ceil(len(collect_link_class) / 2))):
+    try:
+        _ = collect_link_class[iteration_no * 2 + 1]
+        odd_or_even_check = 2
+    except:
+        odd_or_even_check = 1
+    for i in range(odd_or_even_check):
+        print(collect_link_class[i+iteration_no*2])
 
 

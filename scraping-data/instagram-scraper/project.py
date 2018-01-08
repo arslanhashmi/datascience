@@ -4,13 +4,13 @@ from bs4 import BeautifulSoup
 import os,requests,shutil
 
 class App:
-     def __init__(self,username='m.arslanijaz99@hotmail.com',password='noways12',target_username='ahsanabdullah360',path='D:/instagram_scraping/ahsan'):
+     def __init__(self,username='m.arslanijaz99@hotmail.com',password='noways12',target_username='awais.hashmii',path='instagram_scraping'):
          self.username=username
          self.password=password
          self.target_username=target_username
          self.path=path
-         self.driver_path='D:\softwares\chromedriver.exe'
-         self.driver = webdriver.Chrome(self.driver_path)
+         self.driver_path='/Users/arslan/Downloads/chromedriver'
+         self.driver = webdriver.Chrome()
          self.driver.get('https://www.instagram.com')
          sleep(1)
          self.login()
@@ -22,7 +22,7 @@ class App:
          login_button = self.driver.find_element_by_link_text('Log in')  # text of a link ('a') tag
          login_button.click()
          sleep(1)
-         username_field = self.driver.find_element_by_xpath('//input[@placeholder="Username"]')
+         username_field = self.driver.find_element_by_xpath('//input[@placeholder="Phone number, username, or email"]')
          username_field.send_keys(self.username)
          password_field = self.driver.find_element_by_xpath('//input[@placeholder="Password"]')
          password_field.send_keys(self.password)
@@ -39,7 +39,10 @@ class App:
          self.scroll_down()
 
      def scroll_down(self):
-         total_posts = self.driver.find_element_by_xpath("//span[@class='_bkw5z']").text
+         try:
+            total_posts = self.driver.find_element_by_xpath("//span[@class='_he56w']").text
+         except Exception as e:
+             print(e)
          #total_posts=int(str(total_posts.split(',')))
          #total_posts= total_posts.split(',')[0]+total_posts.split(',')[1]
          if int(total_posts)>12:

@@ -11,3 +11,6 @@ matplotlib
 googletrans
 pycorenlp
 spacy
+InstagramAPI
+keras
+theano
